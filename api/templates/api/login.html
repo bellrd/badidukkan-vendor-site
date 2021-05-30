@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/4.8.0/firebase-ui-auth.css"/>
+
+
+    <title>Login to continue</title>
+</head>
+<body>
+
+<div class="container">
+    <div class="m-4 row justify-content-center">
+        <form method="post" id="formOne">
+            {% csrf_token %}
+            <input type="hidden" id="inputToken" name="idToken" value=""/>
+        </form>
+
+        <div class="col-sm-6">
+            <div style="text-align: center; text-decoration: underline blue" class="m-2"><strong>Login to
+                continue</strong></div>
+            <div id="firebaseui-auth-container"></div>
+        </div>
+    </div>
+</div>
+
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+
+<!-- The core Firebase JS SDK is always required and must be listed first -->
+<script src="https://www.gstatic.com/firebasejs/8.6.3/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.6.2/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/ui/4.8.0/firebase-ui-auth.js"></script>
+
+
+<!-- TODO: Add SDKs for Firebase products that you want to use
+     https://firebase.google.com/docs/web/setup#available-libraries -->
+<script src="https://www.gstatic.com/firebasejs/8.6.3/firebase-analytics.js"></script>
+
+<script>
+    // Your web app's Firebase configuration
+    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+    var firebaseConfig = {
+        apiKey: "AIzaSyDbsBTej4dh3OxsOtrFMwi4V73GajsMRSg",
+        authDomain: "badidukkan-9f593.firebaseapp.com",
+        projectId: "badidukkan-9f593",
+        storageBucket: "badidukkan-9f593.appspot.com",
+        messagingSenderId: "554626774578",
+        appId: "1:554626774578:web:3925ccfe738d807c2bee2b",
+        measurementId: "G-DHJRK9XG7E"
+    };
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    firebase.analytics();
+
+    var uiConfig = {
+        {#signInSuccessUrl: '/home',#}
+        signInOptions: [
+            {
+                provider: firebase.auth.PhoneAuthProvider.PROVIDER_ID,
+                defaultCountry: 'IN'
+            }
+        ],
+        privacyPolicyUrl: function () {
+            window.location.assign('<your-privacy-policy-url>');
+        },
+        callbacks: {
+            signInSuccessWithAuthResult: function (authResult, redirectUrl) {
+
+                return false;
+            }
+        }
+    };
+
+    // Initialize the FirebaseUI Widget using Firebase.
+    var ui = new firebaseui.auth.AuthUI(firebase.auth());
+    // The start method will wait until the DOM is loaded.
+    ui.start('#firebaseui-auth-container', uiConfig);
+
+</script>
+<script type="text/javascript">
+    initApp = function () {
+        firebase.auth().onAuthStateChanged(function (user) {
+            if (user) {
+                user.getIdToken().then(function (accessToken) {
+                    document.getElementById('inputToken').setAttribute('value', accessToken)
+                    document.getElementById('formOne').submit();
+                });
+            }
+        }, function (error) {
+            console.log(error);
+        });
+    };
+
+    window.addEventListener('load', function () {
+        initApp()
+    });
+</script>
+</body>
+</html>
